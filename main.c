@@ -32,7 +32,21 @@ int shieldNums(int value)//shield
     return 0;
 }
 
-int danger(int togo)
+int oneDanger(int x)//判断单个格子的值是否安全
+{
+    if(x==0)
+        return 0;
+    if(x<=0&&x>=-10000)
+        return 0;
+    if(ifNeck(x)==1)
+        return 0;
+    if(x==1920231)
+        return 0;
+    return 1;
+
+}
+
+int danger(int togo,int *map)
 {
     if(togo==1)//将要往上走
     {
@@ -40,27 +54,35 @@ int danger(int togo)
         {
             return 1;
         }
+        if(oneDanger(map[myhead-40])==1)
+            return 1;
     }
-    if(togo==3)
+    if(togo==3)//将要往下走
     {
         if((myhead>=40*29&&myhead<40*30)||direction==1)
         {
             return 1;
         }
+        if(oneDanger(map[myhead+40])==1)
+            return 1;
     }
-    if(togo==0)
+    if(togo==0)//将要往左走
     {
         if(myhead%40==0||direction==2)
         {
             return 1;
         }
+        if(oneDanger(map[myhead-1])==1)
+            return 1;
     }
-    if(togo==2)
+    if(togo==2)//将要往右走
     {
         if((myhead%40==39&&myhead>0)||direction==0)
         {
             return 1;
         }
+        if(oneDanger(map[myhead+1])==1)
+            return 1;
     }
     return 0;
 }
@@ -80,11 +102,12 @@ int judge(int * map)//读入当前地图之后输出一个方向
     myshield = shieldNums(map[myneck]); //根据脖子的数值获得道具数量
     //if(myshield >=1){return 4;}//如果拥有的道具超过两个，直接放道具。
 
-    for(int i=0;i<=4;i++) //选一个能走的方向，走
+    for(int i=0;i<=3;i++) //选一个能走的方向，走
     {
-        if(danger(i)==0) return i;
+        if(danger(i,map)==0) return i;
     }
 
+    //还未考虑用盾牌的情况
     return 0; //哪个方向都不能走，那就随便走一个0吧，来世再见。
 }
 
