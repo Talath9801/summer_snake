@@ -2,10 +2,11 @@
 #include<stdlib.h>
 #include<time.h>
 
-//本代码对应的学号为2019101404
-//仓促完成，代码质量不高，仅供参考
+
+
 
 int myhead= -1, myneck = -1, direction= -1, myshield= -1; //头位置，脖子位置，方向，道具数。
+int score[4]={-1};
 
 int ifHead(int value)//判断一个格子的数值是否是头
 {
@@ -86,6 +87,14 @@ int danger(int togo,int *map)
     }
     return 0;
 }
+
+void  calculate(int *map)
+{
+    for(int i=0;i<4;i++)
+        score[i]=0;//重置评分表
+
+}
+
 int judge(int * map)//读入当前地图之后输出一个方向
 {
     //一行40个
@@ -102,10 +111,195 @@ int judge(int * map)//读入当前地图之后输出一个方向
     myshield = shieldNums(map[myneck]); //根据脖子的数值获得道具数量
     //if(myshield >=1){return 4;}//如果拥有的道具超过两个，直接放道具。
 
-    for(int i=0;i<=3;i++) //选一个能走的方向，走
+
+    calculate(map);//算分
+    if(score[0]>=score[1]&&score[0]>=score[2]&&score[0]>=score[3])
+    {
+        if(danger(0,map)==0)
+            return 0;
+        else if(score[1]>=score[2]&&score[1]>=score[3])
+        {
+            if(danger(1,map)==0)
+                return 1;
+            else if(score[2]>=score[3])
+            {
+                if(danger(2,map)==0)
+                    return 2;
+                else if(danger(3,map)==0)
+                        return 3;
+            }
+
+        }
+        else if(score[2]>=score[3]&&score[2]>=score[1])
+        {
+            if(danger(2,map)==0)
+                return 2;
+            else if(score[3]>=score[1])
+            {
+                if(danger(3,map)==0)
+                    return 3;
+                else if(danger(1,map)==0)
+                        return 1;
+            }
+
+        }
+        else if(score[3]>=score[1]&&score[3]>=score[2])
+        {
+            if(danger(3,map)==0)
+                return 3;
+            else if(score[1]>=score[2])
+            {
+                if(danger(1,map)==0)
+                    return 1;
+                else if(danger(2,map)==0)
+                        return 2;
+            }
+
+        }
+
+    }
+
+    if(score[1]>=score[2]&&score[1]>=score[3]&&score[1]>=score[0])
+    {
+        if(danger(1,map)==0)
+            return 1;
+        else if(score[2]>=score[3]&&score[2]>=score[0])
+        {
+            if(danger(2,map)==0)
+                return 2;
+            else if(score[3]>=score[0])
+            {
+                if(danger(3,map)==0)
+                    return 3;
+                else if(danger(0,map)==0)
+                        return 0;
+            }
+
+        }
+        else if(score[3]>=score[0]&&score[3]>=score[2])
+        {
+            if(danger(3,map)==0)
+                return 3;
+            else if(score[0]>=score[2])
+            {
+                if(danger(0,map)==0)
+                    return 0;
+                else if(danger(2,map)==0)
+                        return 2;
+            }
+
+        }
+        else if(score[0]>=score[2]&&score[0]>=score[3])
+        {
+            if(danger(0,map)==0)
+                return 0;
+            else if(score[2]>=score[3])
+            {
+                if(danger(2,map)==0)
+                    return 2;
+                else if(danger(3,map)==0)
+                        return 3;
+            }
+
+        }
+
+    }
+
+    if(score[2]>=score[3]&&score[2]>=score[0]&&score[2]>=score[1])
+    {
+        if(danger(2,map)==0)
+            return 2;
+        else if(score[3]>=score[0]&&score[3]>=score[1])
+        {
+            if(danger(3,map)==0)
+                return 3;
+            else if(score[0]>=score[1])
+            {
+                if(danger(0,map)==0)
+                    return 0;
+                else if(danger(1,map)==0)
+                        return 1;
+            }
+
+        }
+        else if(score[0]>=score[1]&&score[0]>=score[3])
+        {
+            if(danger(0,map)==0)
+                return 0;
+            else if(score[1]>=score[3])
+            {
+                if(danger(1,map)==0)
+                    return 1;
+                else if(danger(3,map)==0)
+                        return 3;
+            }
+
+        }
+        else if(score[1]>=score[3]&&score[1]>=score[0])
+        {
+            if(danger(1,map)==0)
+                return 1;
+            else if(score[3]>=score[0])
+            {
+                if(danger(3,map)==0)
+                    return 3;
+                else if(danger(0,map)==0)
+                        return 0;
+            }
+
+        }
+
+    }
+
+    if(score[3]>=score[0]&&score[3]>=score[1]&&score[3]>=score[2])
+    {
+        if(danger(3,map)==0)
+            return 3;
+        else if(score[0]>=score[1]&&score[0]>=score[2])
+        {
+            if(danger(0,map)==0)
+                return 0;
+            else if(score[1]>=score[2])
+            {
+                if(danger(1,map)==0)
+                    return 1;
+                else if(danger(2,map)==0)
+                        return 2;
+            }
+
+        }
+        else if(score[1]>=score[2]&&score[1]>=score[0])
+        {
+            if(danger(1,map)==0)
+                return 1;
+            else if(score[2]>=score[0])
+            {
+                if(danger(2,map)==0)
+                    return 2;
+                else if(danger(0,map)==0)
+                        return 0;
+            }
+
+        }
+        else if(score[2]>=score[0]&&score[2]>=score[1])
+        {
+            if(danger(2,map)==0)
+                return 2;
+            else if(score[0]>=score[1])
+            {
+                if(danger(0,map)==0)
+                    return 0;
+                else if(danger(1,map)==0)
+                        return 1;
+            }
+
+        }
+
+    }
+    /*for(int i=0;i<=3;i++) //选一个能走的方向，走
     {
         if(danger(i,map)==0) return i;
-    }
+    }*/
 
     //还未考虑用盾牌的情况
     return 0; //哪个方向都不能走，那就随便走一个0吧，来世再见。
