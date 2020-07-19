@@ -5,60 +5,84 @@
 //本代码对应的学号为2019101404
 //仓促完成，代码质量不高，仅供参考
 
-int judgeifHead(int value)//判断一个格子的数值是否是头
+int myhead= -1, myneck = -1, direction= -1, myshield= -1; //头位置，脖子位置，方向，道具数。
+
+int ifHead(int value)//判断一个格子的数值是否是头
 {
     if(value >= 92310 && value <= 92314){return 1;}
-    /*int negvalue = -value;
-    if(negvalue >= 940400 && value <= 940402){return 1;}
-    if(negvalue >= 940410 && value <= 940412){return 1;}
-    if(negvalue >= 940420 && value <= 940422){return 1;}
-    if(negvalue >= 940430 && value <= 940432){return 1;}
-    return 0;*/
+    int negvalue = -value;
+        if(negvalue >= 923100 && value <= 923102){return 1;}
+        if(negvalue >= 923110 && value <= 923112){return 1;}
+        if(negvalue >= 923120 && value <= 923122){return 1;}
+        if(negvalue >= 923130 && value <= 923132){return 1;}
     else
         return 0;
 }
 
-int judgeifBozi(int value)//判断一个格子的数值是否是脖子
+int ifNeck(int value)//判断一个格子的数值是否是脖子
 {
     if(value >= 19202310 && value <=  19202319){return 1;}
-    //if(value >=  191140410 && value <=  191140499){return 1;}
     return 0;
 }
 
-int judgeDaojuNums(int value)////判断当前拥有多少道具
+int shieldNums(int value)//shield
 {
-    //if(value >=  19114040 && value <=  19114049){return value % 10;}
-    //if(value >=  191140410 && value <=  191140499){return 9;} //偷懒了，超过9一律按9处理
+    if(value >=  19202310 && value <=  19202319){return value % 10;}
+    if(value >=  192023110 && value <=  192023199){return 9;} //偷懒了，超过9一律按9处理
     return 0;
 }
 
-
-int judge(int * map)//本算法实现了不会因为撞墙而死，当蛇拥有两个道具便无脑放一次道具。
+int danger(int togo)
+{
+    if(togo==1)//将要往上走
+    {
+        if((myhead>=0&&myhead<40)||direction==3)
+        {
+            return 1;
+        }
+    }
+    if(togo==3)
+    {
+        if((myhead>=40*29&&myhead<40*30)||direction==1)
+        {
+            return 1;
+        }
+    }
+    if(togo==0)
+    {
+        if(myhead%40==0||direction==2)
+        {
+            return 1;
+        }
+    }
+    if(togo==2)
+    {
+        if((myhead%40==39&&myhead>0)||direction==0)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+int judge(int * map)//读入当前地图之后输出一个方向
 {
     //一行40个
     //首先找头，脖子，方向
-    int head_idx = -1, bozi_idx = -1, des = -1, daoju_nums = -1; //头位置，脖子位置，方向，道具数。
+    //int myhead= -1, myneck = -1, direction= -1, myshield= -1; //头位置，脖子位置，方向，道具数。
     for(int i=0; i< 30*40; i++){
-        if(judgeifHead(map[i])){ //此格是否为头?
-            head_idx = i;
-            if(map[i] > 0){des = map[i] % 10; }
-            else{des = (-map[i]) /10%10;}
+        if(ifHead(map[i])){ //找头
+            myhead= i;
+            if(map[i] > 0){direction = map[i] % 10; }//非保护状态
+            else{direction = (-map[i]) /10%10;}//保护状态
         }
-        if(judgeifBozi(map[i])){bozi_idx = i;}//此格是否为脖子
+        if(ifNeck(map[i])){myneck= i;}//找脖子
     }
-    daoju_nums = judgeDaojuNums(map[bozi_idx]); //根据脖子的数值获得道具数量
-    if(daoju_nums > 2){return 4;}//如果拥有的道具超过两个，直接放道具。
+    myshield = shieldNums(map[myneck]); //根据脖子的数值获得道具数量
+    //if(myshield >=1){return 4;}//如果拥有的道具超过两个，直接放道具。
 
-    //printf("%d %d %d\n",head_idx,bozi_idx, des);
-    int cannotgo[4] = {0}; //使用排除法，记录哪些方向不能走。
-    if ((head_idx >= 0 && head_idx < 40) || des == 3){cannotgo[1] = 1;  }//有墙，或此时正往下走，则不能往上走
-    if((head_idx >= 40 * 29 && head_idx < 40 * 30 ) || des == 1) {cannotgo[3] = 1; }////有墙，或此时正往上走，则不能往下走
-    if ((head_idx % 40 == 0) || des == 2)  {cannotgo[0] = 1; }////有墙，或此时正往右走，则不能往左走
-    if((head_idx % 39 == 0 && head_idx > 0) || des == 0)  {cannotgo[2] = 1; } ////有墙，或此时正往左走 ，不能往右走
-
-    for(int i=0; i<4; i++) //选一个能走的方向，走
+    for(int i=0;i<=4;i++) //选一个能走的方向，走
     {
-        if(!cannotgo[i]) return i;
+        if(danger(i)==0) return i;
     }
 
     return 0; //哪个方向都不能走，那就随便走一个0吧，来世再见。
