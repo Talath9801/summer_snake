@@ -6,14 +6,59 @@
 
 
 int myhead= -1, myneck = -1, direction= -1, myshield= -1; //头位置，脖子位置，方向，道具数。
+int row,line;
 //int score[4]={-1};
+//int *scoreList[40*30];
 struct option
 {
     int _direc;
     int _score;
 };
 struct option myopt[4];
+int valid(int pos)
+{
+    if(pos>=0&&pos<40*30)
+        return 1;
+    else return 0;
+}
 
+int addaround(int posi,int *map)
+{
+    int count=0;
+    if(posi>=40)
+    {
+        int t=posi-40;
+        if(map[t]==-100)
+            count=+1000;
+        else if(map[t]<=-1&&map[t]>=-5)
+            count+=map[t]*(-100);
+    }
+    if(posi<40*29)
+    {
+        int t=posi+40;
+        if(map[t]==-100)
+            count=+1000;
+        else if(map[t]<=-1&&map[t]>=-5)
+            count+=map[t]*(-100);
+    }
+    if(posi%40==0)
+    {
+        int t=posi-1;
+        if(map[t]==-100)
+            count=+1000;
+        else if(map[t]<=-1&&map[t]>=-5)
+            count+=map[t]*(-100);
+    }
+    if(posi%40==39)
+    {
+        int t=posi+1;
+        if(map[t]==-100)
+            count=+1000;
+        else if(map[t]<=-1&&map[t]>=-5)
+            count+=map[t]*(-100);
+    }
+    return count;
+}
 int ifHead(int value)//判断一个格子的数值是否是头
 {
     if(value >= 92310 && value <= 92314){return 1;}
@@ -106,33 +151,38 @@ void  calculate(int *map)
     {
         int temp=myhead-40;
         if(map[temp]==-100)
-            myopt[1]._score+=1000;
+            myopt[1]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
-            myopt[1]._score+=map[temp]*(-100);
+            myopt[1]._score+=map[temp]*(-1000);
+        myopt[1]._score+=addaround(temp,map);
+
     }
     if(myhead<40*29)//下方的格子
     {
         int temp=myhead+40;
         if(map[temp]==-100)
-            myopt[3]._score+=1000;
+            myopt[3]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
-            myopt[3]._score+=map[temp]*(-100);
+            myopt[3]._score+=map[temp]*(-1000);
+        myopt[3]._score+=addaround(temp,map);
     }
     if(myhead%40!=0)//左边的格子
     {
         int temp=myhead-1;
         if(map[temp]==-100)
-            myopt[0]._score+=1000;
+            myopt[0]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
-            myopt[0]._score+=map[temp]*(-100);
+            myopt[0]._score+=map[temp]*(-1000);
+        myopt[0]._score+=addaround(temp,map);
     }
     if(myhead%40!=39)//右边的格子
     {
         int temp=myhead+1;
         if(map[temp]==-100)
-            myopt[2]._score+=1000;
+            myopt[2]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
-            myopt[2]._score+=map[temp]*(-100);
+            myopt[2]._score+=map[temp]*(-1000);
+        myopt[2]._score+=addaround(temp,map);
     }
 }
 
@@ -149,6 +199,8 @@ int judge(int * map)//读入当前地图之后输出一个方向
         }
         if(ifNeck(map[i])){myneck= i;}//找脖子
     }
+    line=myhead%40;
+    row=(myhead-line)/40;
     myshield = shieldNums(map[myneck]); //根据脖子的数值获得道具数量
     //if(myshield >=1){return 4;}//如果拥有的道具超过两个，直接放道具。
 
@@ -178,10 +230,7 @@ int judge(int * map)//读入当前地图之后输出一个方向
         if(danger(myopt[i]._direc,map)==0)
             return myopt[i]._direc;
     }
-    /*for(int i=0;i<=3;i++) //选一个能走的方向，走
-    {
-        if(danger(i,map)==0) return i;
-    }*/
+
 
     //还未考虑用盾牌的情况
     return 4; //哪个方向都不能走，那就随便走一个0吧，来世再见。
