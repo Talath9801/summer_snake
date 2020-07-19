@@ -92,7 +92,38 @@ void  calculate(int *map)
 {
     for(int i=0;i<4;i++)
         score[i]=0;//重置评分表
-
+    if(myhead>=40)//上方的格子
+    {
+        int temp=myhead-40;
+        if(map[temp]==-100)
+            score[1]+=1000;
+        else if(map[temp]<=-1&&map[temp]>=-5)
+            score[1]+=map[temp]*(-100);
+    }
+    if(myhead<40*29)//下方的格子
+    {
+        int temp=myhead+40;
+        if(map[temp]==-100)
+            score[1]+=1000;
+        else if(map[temp]<=-1&&map[temp]>=-5)
+            score[1]+=map[temp]*(-100);
+    }
+    if(myhead%40!=0)//左边的格子
+    {
+        int temp=myhead-1;
+        if(map[temp]==-100)
+            score[1]+=1000;
+        else if(map[temp]<=-1&&map[temp]>=-5)
+            score[1]+=map[temp]*(-100);
+    }
+    if(myhead%40!=39)//右边的格子
+    {
+        int temp=myhead+1;
+        if(map[temp]==-100)
+            score[1]+=1000;
+        else if(map[temp]<=-1&&map[temp]>=-5)
+            score[1]+=map[temp]*(-100);
+    }
 }
 
 int judge(int * map)//读入当前地图之后输出一个方向
@@ -112,7 +143,7 @@ int judge(int * map)//读入当前地图之后输出一个方向
     //if(myshield >=1){return 4;}//如果拥有的道具超过两个，直接放道具。
 
 
-    calculate(map);//算分
+    calculate(map);//算分,保存到score数组中
     if(score[0]>=score[1]&&score[0]>=score[2]&&score[0]>=score[3])
     {
         if(danger(0,map)==0)
