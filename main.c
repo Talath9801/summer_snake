@@ -97,6 +97,34 @@ int oneDanger(int x)//判断单个格子的值是否安全
     return 1;
 
 }
+int expectDanger(int pos,int *map)//预判安全,检测其他蛇下一步的头,pos是将要到达的位置
+{
+    if(pos>=40)//上方有空
+    {
+        int temp=pos-40;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==3)
+            return 1;
+    }
+    if(pos<40*29)//下方有空
+    {
+        int temp=pos+40;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==1)
+            return 1;
+    }
+    if(pos%40!=0)//左方有空
+    {
+        int temp=pos-1;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==2)
+            return 1;
+    }
+    if(pos%40!=39)//右方有空
+    {
+        int temp=pos+1;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==0)
+            return 1;
+    }
+    return 0;
+}
 
 int danger(int togo,int *map)
 {
@@ -108,6 +136,8 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead-40])==1)
             return 1;
+        if(expectDanger(myhead-40,map)==1)
+            return 1;
     }
     if(togo==3)//将要往下走
     {
@@ -116,6 +146,8 @@ int danger(int togo,int *map)
             return 1;
         }
         if(oneDanger(map[myhead+40])==1)
+            return 1;
+        if(expectDanger(myhead+40,map)==1)
             return 1;
     }
     if(togo==0)//将要往左走
@@ -126,6 +158,8 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead-1])==1)
             return 1;
+        if(expectDanger(myhead-1,map)==1)
+            return 1;
     }
     if(togo==2)//将要往右走
     {
@@ -134,6 +168,8 @@ int danger(int togo,int *map)
             return 1;
         }
         if(oneDanger(map[myhead+1])==1)
+            return 1;
+        if(expectDanger(myhead+1,map)==1)
             return 1;
     }
     return 0;
@@ -233,6 +269,11 @@ int judge(int * map)//读入当前地图之后输出一个方向
 
 
     //还未考虑用盾牌的情况
+    for(int i=0;i<4;i++)
+    {
+        if(danger(i,map)==0)
+            return i;
+    }
     return 4; //哪个方向都不能走，那就随便走一个0吧，来世再见。
 }
 
